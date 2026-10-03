@@ -101,6 +101,7 @@
   "use strict";
   const W = 400, H = 640, WALL = 62, LX = WALL, RX = W - WALL;
   const G = 1200, JVX = 340, JVY = -600, SPAN = RX - LX;
+  const LIVES = 3;                              // a hit costs one; the last one ends the climb
   const WINGS_MAX = 3, WINGS_START = 1;         // feathers held: each one is a single leap in mid-air
   const canvas = document.getElementById('game');
   const ctx = canvas.getContext('2d');
@@ -140,6 +141,7 @@
   const sfxCling = () => tone(240, 140, 0.08, 'sine', 0.1);
   const sfxCoin = () => { tone(1046, 1046, 0.06, 'sine', 0.11); tone(1568, 1568, 0.1, 'sine', 0.07, 0.04); };
   const sfxHit = () => tone(260, 50, 0.45, 'sawtooth', 0.15);
+  const sfxHurt = () => { tone(300, 120, 0.22, 'sawtooth', 0.11); tone(700, 500, 0.08, 'square', 0.04); };
   const sfxFeather = () => { tone(784, 1175, 0.14, 'sine', 0.1); tone(1175, 1568, 0.12, 'sine', 0.05, 0.05); };
   const sfxWing = () => tone(660, 1100, 0.13, 'triangle', 0.1);
   const sfxBell = () => { tone(392, 392, 0.9, 'sine', 0.1); tone(588, 588, 0.7, 'sine', 0.05, 0.02); };
@@ -150,13 +152,13 @@
   });
 
   /* ------------------------------------------------------------ state */
-  let state = 'ready', cat, spikes, coins, feathers, wings, sparks, motes, cam, top, gold, best = 0,
+  let state = 'ready', cat, spikes, coins, feathers, wings, lives, hurtT, sparks, motes, cam, top, gold, best = 0,
       nextSpike, t = 0, shake = 0, flashT = 0, bellAt, seedN = 11;
   const rnd = () => (seedN = (seedN * 48271) % 2147483647) / 2147483647;
 
   function reset() {
     cat = { x: LX, y: 0, vx: 0, vy: 0, side: 0, air: false, anim: 0, rot: 0, dead: false };
-    spikes = []; coins = []; feathers = []; sparks = []; gold = 0; wings = WINGS_START;
+    spikes = []; coins = []; feathers = []; sparks = []; gold = 0; wings = WINGS_START; lives = LIVES; hurtT = 0;
     cam = -H * 0.58; top = 0; nextSpike = -240; shake = 0; flashT = 0; bellAt = -3000;
     seedN = (Math.random() * 2147483000 | 0) || 11;
     motes = Array.from({ length: 26 }, () => ({ x: LX + rnd() * SPAN, y: rnd() * H, s: 8 + rnd() * 20 }));
@@ -208,6 +210,15 @@
     cat.vy = JVY;
     sfxJump();
   }
+  // a hit with lives to spare: the spikes that caught the cat break away,
+  // or the dark falls back below it, and the climb goes on
+  function hit(spike) {
+    lives--;
+    if (lives <= 0) { die(); return; }
+    if (spike) { spikes.splice(spikes.indexOf(spike), 1); burst(cat.x, cat.y); }
+    else cam = cat.y - H * 0.58;
+    hurtT = 1.2; sfxHurt(); shake = reduce ? 0 : 8; flashT = 0.35;
+  }
   function die() {
     state = 'hit'; cat.dead = true; cat.vy = -160; cat.vx *= 0.4;
     sfxHit(); shake = reduce ? 0 : 12; flashT = 0.5;
@@ -254,8 +265,8 @@
   }
   function spiked(side, y) {
     for (const s of spikes)
-      if (s.side === side && y > s.y - 16 && y < s.y + s.h + 16) return true;
-    return false;
+      if (s.side === side && y > s.y - 16 && y < s.y + s.h + 16) return s;
+    return null;
   }
 
   /* ------------------------------------------------------------ logic */
@@ -263,6 +274,7 @@
     t += dt;
     if (shake > 0) shake = Math.max(0, shake - dt * 34);
     if (flashT > 0) flashT = Math.max(0, flashT - dt * 2.4);
+    if (hurtT > 0) hurtT = Math.max(0, hurtT - dt);
 
     if (state === 'climb') {
       cat.anim += dt * 8;
@@ -273,7 +285,8 @@
         else if (cat.vx < 0 && cat.x <= LX) { cat.x = LX; land(0); }
       } else {
         cat.y += slide() * dt;
-        if (spiked(cat.side, cat.y)) { die(); return; }
+        const s = spiked(cat.side, cat.y);
+        if (s) { hit(s); if (state !== 'climb') return; }
       }
       if (cat.y < top) { top = cat.y; generate(); }
       cam = Math.min(cam - creep() * dt, cat.y - H * 0.58);
@@ -291,7 +304,7 @@
           f.got = true; wings = Math.min(WINGS_MAX, wings + 1); sfxFeather(); burst(f.x, f.y);
         }
       }
-      if (cat.y - cam > H - 6) { die(); }
+      if (cat.y - cam > H - 6) hit(null);
     } else if (state === 'hit') {
       cat.vy += G * dt; cat.y += cat.vy * dt; cat.x += cat.vx * dt; cat.rot += dt * 5;
       if (cat.y - cam > H + 140) settle();
@@ -309,7 +322,8 @@
 
   function land(side) {
     cat.air = false; cat.side = side; cat.vx = 0; cat.vy = 0;
-    if (spiked(side, cat.y)) { die(); return; }
+    const s = spiked(side, cat.y);
+    if (s) { hit(s); return; }
     sfxCling();
   }
 
@@ -373,6 +387,7 @@
     const w = 46, h = w * 100 / 132;
     const sprite = cat.dead ? img.fall : (Math.floor(cat.anim) % 2 ? img.b : img.a);
     ctx.save();
+    if (hurtT > 0 && Math.floor(hurtT * 12) % 2) ctx.globalAlpha = 0.35;   // blinks after a hit
     ctx.translate(cat.x, cat.y - cam);
     if (cat.dead) {
       ctx.rotate(cat.rot);
@@ -465,6 +480,10 @@
       ctx.font = '600 23px "EB Garamond",Georgia,serif';
       ctx.fillStyle = '#E8B85C'; ctx.fillText(gold, 44, 31);
       ctx.restore();
+      for (let i = 0; i < LIVES; i++) {
+        ctx.fillStyle = i < lives ? '#D9A342' : 'rgba(217,163,66,.2)';
+        ctx.beginPath(); ctx.arc(W - 26 - i * 17, 64, 5.5, 0, 6.2832); ctx.fill();
+      }
       for (let i = 0; i < WINGS_MAX; i++) feather(24 + i * 15, 62, 0.8, 0.35, i < wings ? 1 : 0.2);
     }
     ctx.restore();
@@ -498,7 +517,7 @@
   }
 
   if (window.__BF_TEST)                      // read-only hook for the test harness
-    window.__bf = () => ({ state, cat, spikes, coins, feathers, wings, cam, top, gold,
+    window.__bf = () => ({ state, cat, spikes, coins, feathers, wings, lives, cam, top, gold,
                            h: height(), LX, RX, H, G, JVX, JVY });
 
   Promise.all(pending).then(() => {
