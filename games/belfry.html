@@ -94,13 +94,14 @@
     </div>
     <button class="sound" id="soundBtn" type="button" aria-label="Mute sound">♪</button>
   </div>
-  <p class="keys"><kbd>space</kbd> to leap &nbsp;·&nbsp; tap works too</p>
+  <p class="keys"><kbd>space</kbd> to leap &nbsp;·&nbsp; with a feather, leap again in mid-air &nbsp;·&nbsp; tap works too</p>
 
 <script>
 (() => {
   "use strict";
   const W = 400, H = 640, WALL = 62, LX = WALL, RX = W - WALL;
   const G = 1200, JVX = 340, JVY = -600, SPAN = RX - LX;
+  const WINGS_MAX = 3, WINGS_START = 1;         // feathers held: each one is a single leap in mid-air
   const canvas = document.getElementById('game');
   const ctx = canvas.getContext('2d');
   const frame = document.getElementById('frame');
@@ -139,6 +140,8 @@
   const sfxCling = () => tone(240, 140, 0.08, 'sine', 0.1);
   const sfxCoin = () => { tone(1046, 1046, 0.06, 'sine', 0.11); tone(1568, 1568, 0.1, 'sine', 0.07, 0.04); };
   const sfxHit = () => tone(260, 50, 0.45, 'sawtooth', 0.15);
+  const sfxFeather = () => { tone(784, 1175, 0.14, 'sine', 0.1); tone(1175, 1568, 0.12, 'sine', 0.05, 0.05); };
+  const sfxWing = () => tone(660, 1100, 0.13, 'triangle', 0.1);
   const sfxBell = () => { tone(392, 392, 0.9, 'sine', 0.1); tone(588, 588, 0.7, 'sine', 0.05, 0.02); };
   soundBtn.addEventListener('click', e => {
     e.stopPropagation(); muted = !muted;
@@ -147,13 +150,13 @@
   });
 
   /* ------------------------------------------------------------ state */
-  let state = 'ready', cat, spikes, coins, sparks, motes, cam, top, gold, best = 0,
+  let state = 'ready', cat, spikes, coins, feathers, wings, sparks, motes, cam, top, gold, best = 0,
       nextSpike, t = 0, shake = 0, flashT = 0, bellAt, seedN = 11;
   const rnd = () => (seedN = (seedN * 48271) % 2147483647) / 2147483647;
 
   function reset() {
     cat = { x: LX, y: 0, vx: 0, vy: 0, side: 0, air: false, anim: 0, rot: 0, dead: false };
-    spikes = []; coins = []; sparks = []; gold = 0;
+    spikes = []; coins = []; feathers = []; sparks = []; gold = 0; wings = WINGS_START;
     cam = -H * 0.58; top = 0; nextSpike = -240; shake = 0; flashT = 0; bellAt = -3000;
     seedN = (Math.random() * 2147483000 | 0) || 11;
     motes = Array.from({ length: 26 }, () => ({ x: LX + rnd() * SPAN, y: rnd() * H, s: 8 + rnd() * 20 }));
@@ -169,7 +172,9 @@
       const side = rnd() < 0.5 ? 0 : 1;
       const h = 44 + rnd() * (22 + 30 * hard);
       spikes.push({ side, y: nextSpike - h, h });
-      if (rnd() < 0.55) {
+      if (rnd() < 0.3) {
+        feathers.push({ x: LX + 50 + rnd() * (SPAN - 100), y: nextSpike - 80, got: false });
+      } else if (rnd() < 0.55) {
         const n = 2 + ((rnd() * 3) | 0);
         for (let i = 0; i < n; i++)
           coins.push({ x: LX + 40 + rnd() * (SPAN - 80), y: nextSpike - 60 - i * 34, got: false });
@@ -179,6 +184,7 @@
     }
     spikes = spikes.filter(s => s.y < top + H * 1.2);
     coins = coins.filter(c => c.y < top + H * 1.2);
+    feathers = feathers.filter(f => f.y < top + H * 1.2);
   }
   reset();
 
@@ -190,8 +196,13 @@
     reset(); state = 'climb';
     readyPanel.hidden = true; overPanel.hidden = true;
   }
-  function leap() {
-    if (cat.air) return;
+  function leap(repeat) {
+    if (cat.air) {                              // a feather buys one more leap, same direction
+      if (repeat || wings === 0) return;        // a held key never spends one
+      wings--; cat.vy = JVY;
+      sfxWing(); burst(cat.x, cat.y + 14);
+      return;
+    }
     cat.air = true;
     cat.vx = cat.side === 0 ? JVX : -JVX;
     cat.vy = JVY;
@@ -215,9 +226,9 @@
       m < 190 ? 'The bells are close' : 'You have rung every bell';
     overPanel.hidden = false;
   }
-  function input() {
+  function input(repeat) {
     if (state === 'ready') start();
-    else if (state === 'climb') leap();
+    else if (state === 'climb') leap(repeat);
     else if (state === 'over') start();
   }
   frame.addEventListener('pointerdown', e => {
@@ -227,7 +238,7 @@
   addEventListener('keydown', e => {
     if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'Enter') {
       if (document.activeElement && document.activeElement.tagName === 'BUTTON' && e.code === 'Enter') return;
-      e.preventDefault(); input();
+      e.preventDefault(); input(e.repeat);
     }
   });
   document.getElementById('startBtn').addEventListener('click', e => { e.stopPropagation(); start(); });
@@ -272,6 +283,12 @@
         if (Math.abs(c.x - cat.x) < 26 && Math.abs(c.y - cat.y) < 30) {
           c.got = true; gold++; sfxCoin(); burst(c.x, c.y);
           if (gold % 25 === 0) { sfxBell(); bellAt = t; }
+        }
+      }
+      for (const f of feathers) {
+        if (f.got) continue;
+        if (Math.abs(f.x - cat.x) < 28 && Math.abs(f.y - cat.y) < 32) {
+          f.got = true; wings = Math.min(WINGS_MAX, wings + 1); sfxFeather(); burst(f.x, f.y);
         }
       }
       if (cat.y - cam > H - 6) { die(); }
@@ -336,6 +353,22 @@
     ctx.fillRect(s.side === 0 ? x - 5 : x, y - 3, 5, s.h + 6);
   }
 
+  function feather(x, y, k, rot, alpha) {
+    ctx.save();
+    ctx.translate(x, y); ctx.rotate(rot); ctx.scale(k, k); ctx.globalAlpha = alpha;
+    ctx.fillStyle = '#EFE6D2';
+    ctx.beginPath();
+    ctx.moveTo(0, -13); ctx.quadraticCurveTo(8, -4, 2.2, 8); ctx.lineTo(0, 9.5);
+    ctx.lineTo(-2.2, 8); ctx.quadraticCurveTo(-8, -4, 0, -13); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = '#8C7A5A'; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(0, -11); ctx.lineTo(0, 14); ctx.stroke();
+    ctx.lineWidth = 0.8;
+    for (const by of [-6, -1, 4]) {
+      ctx.beginPath(); ctx.moveTo(0, by); ctx.lineTo(4.5, by - 3); ctx.moveTo(0, by); ctx.lineTo(-4.5, by - 3); ctx.stroke();
+    }
+    ctx.restore();
+  }
+
   function drawCat() {
     const w = 46, h = w * 100 / 132;
     const sprite = cat.dead ? img.fall : (Math.floor(cat.anim) % 2 ? img.b : img.a);
@@ -391,6 +424,17 @@
       ctx.drawImage(img.coin, c.x - 13, y - 13 + Math.sin(t * 3 + c.x) * 2, 26, 26);
     }
 
+    for (const f of feathers) {
+      if (f.got) continue;
+      const y = f.y - cam;
+      if (y < -40 || y > H + 40) continue;
+      const fy = y + Math.sin(t * 2.4 + f.x) * 3;
+      const halo = ctx.createRadialGradient(f.x, fy, 0, f.x, fy, 26);
+      halo.addColorStop(0, 'rgba(240,200,120,.38)'); halo.addColorStop(1, 'rgba(240,200,120,0)');
+      ctx.fillStyle = halo; ctx.fillRect(f.x - 26, fy - 26, 52, 52);
+      feather(f.x, fy, 1.25, 0.5 + Math.sin(t * 1.7 + f.x) * 0.18, 1);
+    }
+
     drawCat();
 
     for (const s of sparks) {
@@ -421,6 +465,7 @@
       ctx.font = '600 23px "EB Garamond",Georgia,serif';
       ctx.fillStyle = '#E8B85C'; ctx.fillText(gold, 44, 31);
       ctx.restore();
+      for (let i = 0; i < WINGS_MAX; i++) feather(24 + i * 15, 62, 0.8, 0.35, i < wings ? 1 : 0.2);
     }
     ctx.restore();
 
@@ -453,7 +498,7 @@
   }
 
   if (window.__BF_TEST)                      // read-only hook for the test harness
-    window.__bf = () => ({ state, cat, spikes, coins, cam, top, gold,
+    window.__bf = () => ({ state, cat, spikes, coins, feathers, wings, cam, top, gold,
                            h: height(), LX, RX, H, G, JVX, JVY });
 
   Promise.all(pending).then(() => {
