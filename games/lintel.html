@@ -194,7 +194,7 @@
   function fail(why) {
     downs++; judge = why; judgeT = 0.9; sfxKnock();
     shake = reduce ? 0 : 10; cleanRun = 0;
-    if (downs >= 3) { setTimeout(() => {}, 0); phase = 'done'; settle(); }
+    if (downs >= 3) { phase = 'done'; settle(); }
     else phase = 'reset';
   }
   function act() {
