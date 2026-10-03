@@ -71,6 +71,8 @@
   .keys kbd{font-family:inherit; font-style:normal; color:#A49C88;
     background:rgba(255,255,255,.06); border-radius:4px; padding:1px 7px}
   @media (prefers-reduced-motion:reduce){ button{transition:none} }
+  .keys a{color:inherit; text-underline-offset:3px}
+  .keys a:hover{color:var(--cream, #F4ECDA)}
 </style>
 </head>
 <body>
@@ -94,7 +96,7 @@
     </div>
     <button class="sound" id="soundBtn" type="button" aria-label="Mute sound">♪</button>
   </div>
-  <p class="keys"><kbd>space</kbd> to loose &nbsp;·&nbsp; tap works too</p>
+  <p class="keys"><kbd>space</kbd> to loose &nbsp;·&nbsp; tap works too &nbsp;·&nbsp; <a href="../index.html">all games</a></p>
 
 <script>
 (() => {
@@ -215,7 +217,7 @@
   });
   addEventListener('keydown', e => {
     if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'Enter') {
-      if (document.activeElement && document.activeElement.tagName === 'BUTTON' && e.code === 'Enter') return;
+      if (document.activeElement && /^(BUTTON|A)$/.test(document.activeElement.tagName) && e.code === 'Enter') return;
       e.preventDefault(); input();
     }
   });

@@ -70,6 +70,8 @@
   .keys kbd{font-family:inherit; font-style:normal; color:#B8AB8F;
     background:rgba(255,255,255,.06); border-radius:4px; padding:1px 7px}
   @media (prefers-reduced-motion:reduce){ button{transition:none} }
+  .keys a{color:inherit; text-underline-offset:3px}
+  .keys a:hover{color:var(--cream, #F4ECDA)}
 </style>
 </head>
 <body>
@@ -93,7 +95,7 @@
     </div>
     <button class="sound" id="soundBtn" type="button" aria-label="Mute sound">♪</button>
   </div>
-  <p class="keys">hold <kbd>space</kbd> to pour &nbsp;·&nbsp; press and hold anywhere</p>
+  <p class="keys">hold <kbd>space</kbd> to pour &nbsp;·&nbsp; press and hold anywhere &nbsp;·&nbsp; <a href="../index.html">all games</a></p>
 
 <script>
 (() => {
@@ -226,7 +228,7 @@
       if (e.repeat) return;
       e.preventDefault(); press();
     } else if (e.code === 'Enter' && (state === 'ready' || state === 'over')) {
-      if (document.activeElement && document.activeElement.tagName === 'BUTTON') return;
+      if (document.activeElement && /^(BUTTON|A)$/.test(document.activeElement.tagName)) return;
       start();
     }
   });
