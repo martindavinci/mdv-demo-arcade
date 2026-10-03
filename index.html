@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Scholar Cat Cabinet</title>
+<meta name="description" content="22 one-button arcade games, one cat, no plugins. Each runs in a single self-contained page.">
+<meta property="og:title" content="The Scholar Cat Cabinet">
+<meta property="og:description" content="22 one-button arcade games sharing one character.">
+<meta property="og:image" content="img/leo.png">
+<meta property="og:type" content="website">
+<link rel="icon" href="img/favicon.png">
+<link href="vendor/fonts/fonts.css" rel="stylesheet">
+<style>
+  :root{
+    --ink:#171008; --panel:#221909; --edge:rgba(217,163,66,.22);
+    --gold:#D9A342; --gold-hi:#F0C878; --cream:#F3E9D6; --mute:#A2957B;
+    --font:"EB Garamond",Georgia,"Times New Roman",serif;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:var(--font); color:var(--cream); background:
+      radial-gradient(70% 40% at 50% 0%, #3A2A14 0%, rgba(58,42,20,0) 70%), var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1020px; margin:0 auto; padding:0 20px 80px}
+
+  header{text-align:center; padding:64px 0 40px}
+  header img{width:132px; height:auto; filter:drop-shadow(0 12px 28px rgba(0,0,0,.6))}
+  h1{margin:16px 0 0; font-size:clamp(38px,7vw,60px); font-weight:600; letter-spacing:.5px}
+  .sub{margin:10px auto 0; max-width:34ch; font-style:italic; color:#CFC2A6; font-size:19px; line-height:1.5}
+  .rule{width:150px; height:1px; background:var(--gold); opacity:.5; margin:26px auto 0; position:relative}
+  .rule::after{content:"❦"; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    background:#241A0C; color:var(--gold); padding:0 10px; font-size:14px}
+
+  .note{max-width:60ch; margin:28px auto 0; text-align:center; color:var(--mute);
+        font-size:15.5px; line-height:1.65}
+  .note b{color:#D8C9A6; font-weight:500}
+
+  section{margin-top:56px}
+  h2{font-size:26px; font-weight:600; margin:0 0 4px; color:var(--cream)}
+  .blurb{margin:0 0 20px; color:var(--mute); font-style:italic; font-size:16.5px}
+
+  .grid{display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+  .card{
+    display:flex; gap:14px; text-decoration:none; color:inherit;
+    background:var(--panel); border:1px solid var(--edge); border-radius:10px;
+    padding:14px; transition:border-color .16s ease, transform .16s ease, background .16s ease;
+  }
+  .card:hover{border-color:rgba(240,200,120,.6); transform:translateY(-2px); background:#2A1F0C}
+  .card:focus-visible{outline:2px solid var(--gold-hi); outline-offset:3px}
+  .plate{
+    flex:0 0 58px; height:58px; border-radius:7px; display:grid; place-items:center;
+    background:linear-gradient(150deg,var(--a),var(--b)); border:1px solid rgba(0,0,0,.4);
+  }
+  .glyph{font-size:24px; color:rgba(255,255,255,.92); text-shadow:0 1px 4px rgba(0,0,0,.65)}
+  .body{display:flex; flex-direction:column; gap:3px; min-width:0}
+  .name{font-size:21px; font-weight:600; line-height:1.1}
+  .hook{font-style:italic; color:#D8C9A6; font-size:15.5px; line-height:1.35}
+  .verb{
+    align-self:flex-start; margin:5px 0 4px; font-size:12.5px; letter-spacing:.04em;
+    text-transform:lowercase; color:#2A1F08; background:var(--gold); padding:2px 9px; border-radius:999px;
+  }
+  .desc{color:var(--mute); font-size:14.5px; line-height:1.55}
+
+  footer{margin-top:64px; padding-top:26px; border-top:1px solid var(--edge);
+         color:var(--mute); font-size:14.5px; line-height:1.7}
+  footer a{color:var(--gold)}
+  @media (prefers-reduced-motion:reduce){ .card{transition:none} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img src="img/leo.png" alt="A ginger cat in round spectacles and a scholar's doublet">
+    <h1>The Scholar Cat Cabinet</h1>
+    <p class="sub">22 one-button arcade games. One cat. One button, asked a different question each time.</p>
+    <div class="rule"></div>
+    <p class="note">Every game is a single self-contained page — no plugins, no downloads, no network
+      after it loads. <b>Space</b> or <b>tap</b> is the only control in all of them. Art is vector-drawn,
+      sound is synthesised in the browser, and nothing here uses a third-party asset.</p>
+  </header>
+
+    <section>
+      <h2>When to press</h2>
+      <p class="blurb">Games that ask for a moment, and punish you for being early or late.</p>
+      <div class="grid">
+      <a class="card" href="games/colonnade.html">
+        <span class="plate" style="--a:#1B1740;--b:#E8B85C"><span class="glyph">‖</span></span>
+        <span class="body">
+          <span class="name">Colonnade</span>
+          <span class="hook">A winged cat between marble gates at twilight.</span>
+          <span class="verb">tap to flap</span>
+          <span class="desc">Gravity pulls, each tap lifts. The columns narrow their gap and the sky quickens as you go. Hugging the ceiling is punished rather than safe.</span>
+        </span>
+      </a>
+      <a class="card" href="games/catwalk.html">
+        <span class="plate" style="--a:#191545;--b:#F1E9D8"><span class="glyph">◆</span></span>
+        <span class="body">
+          <span class="name">Catwalk</span>
+          <span class="hook">An isometric ledge that turns without warning.</span>
+          <span class="verb">tap to turn</span>
+          <span class="desc">The cat trots along marble suspended in the night sky. Turning mid-tile doesn&#x27;t snap you to the centre, so a late turn survives but costs you the coin.</span>
+        </span>
+      </a>
+      <a class="card" href="games/undercroft.html">
+        <span class="plate" style="--a:#101817;--b:#7E9A5E"><span class="glyph">⇅</span></span>
+        <span class="body">
+          <span class="name">Undercroft</span>
+          <span class="hook">Run the vaults, floor and ceiling both.</span>
+          <span class="verb">tap to flip gravity</span>
+          <span class="desc">Tap and the cat falls upward to run along the ceiling. Iron teeth jut from one surface at a time, and every flip commits you for a fixed distance — the spacing is built so no pair is ever impossible to clear.</span>
+        </span>
+      </a>
+      <a class="card" href="games/belfry.html">
+        <span class="plate" style="--a:#1A2130;--b:#BFD4E8"><span class="glyph">☽</span></span>
+        <span class="body">
+          <span class="name">Belfry</span>
+          <span class="hook">Climb a bell tower wall to wall.</span>
+          <span class="verb">tap to leap</span>
+          <span class="desc">Leap between the stone faces, gaining height each time. Cling too long and you slide, while the dark rises from below. Every 25 coins rings the bell.</span>
+        </span>
+      </a>
+      <a class="card" href="games/orrery.html">
+        <span class="plate" style="--a:#0B0E0C;--b:#F0C878"><span class="glyph">☉</span></span>
+        <span class="body">
+          <span class="name">Orrery</span>
+          <span class="hook">Swing between brass spheres in the dark.</span>
+          <span class="verb">tap to let go</span>
+          <span class="desc">Release and you fly off tangentially; come within range of the next sphere and it catches you, taking its spin from your angle of approach. A dashed ray shows exactly where letting go would send you, so the difficulty is timing, never guesswork.</span>
+        </span>
+      </a>
+      <a class="card" href="games/compline.html">
+        <span class="plate" style="--a:#191510;--b:#F6EFD8"><span class="glyph">✦</span></span>
+        <span class="body">
+          <span class="name">Compline</span>
+          <span class="hook">Wait by candlelight for something to land.</span>
+          <span class="verb">strike — or don&#x27;t</span>
+          <span class="desc">Strike the instant it&#x27;s a moth. Leave the beetle alone. The window shrinks from 700ms toward 240, beetles grow commoner, and the targets get smaller — three pressures at once. An average human reaction reaches about round 19.</span>
+        </span>
+      </a>
+      <a class="card" href="games/escapement.html">
+        <span class="plate" style="--a:#191209;--b:#C9A24A"><span class="glyph">◷</span></span>
+        <span class="body">
+          <span class="name">Escapement</span>
+          <span class="hook">Keep a clock alive with your own timing.</span>
+          <span class="verb">tap on each pass</span>
+          <span class="desc">Strike as the pendulum passes through the gate and you feed it energy; strike anywhere else and you jolt the movement. Your taps are the clock&#x27;s only power, so a miss slows the beat itself — errors feed back into the thing you&#x27;re timing against.</span>
+        </span>
+      </a>
+      <a class="card" href="games/tablature.html">
+        <span class="plate" style="--a:#1B1A2E;--b:#E8B85C"><span class="glyph">♪</span></span>
+        <span class="body">
+          <span class="name">Tablature</span>
+          <span class="hook">Play the melody over a walking ground.</span>
+          <span class="verb">tap on the beat</span>
+          <span class="desc">Notes travel a staff toward the strike bar. The bass plays underneath but the melody only sounds when you play it, so a missed note is an audible hole. Music and chart come from the same table of note data — eight chords and a 36-note melody in D minor.</span>
+        </span>
+      </a>
+      <a class="card" href="games/portcullis.html">
+        <span class="plate" style="--a:#3E3524;--b:#E08A4A"><span class="glyph">⌗</span></span>
+        <span class="body">
+          <span class="name">Portcullis</span>
+          <span class="hook">Stop what passes beneath the gatehouse.</span>
+          <span class="verb">tap to drop the gate</span>
+          <span class="desc">The gate takes half a second to fall, so you drop it where they will be, not where they are. Pairs travel close enough that one well-timed drop takes both.</span>
+        </span>
+      </a>
+      <a class="card" href="games/weft.html">
+        <span class="plate" style="--a:#3A2A18;--b:#E8DCC0"><span class="glyph">⧗</span></span>
+        <span class="body">
+          <span class="name">Weft</span>
+          <span class="hook">Weave cloth that records every throw.</span>
+          <span class="verb">tap to throw the shuttle</span>
+          <span class="desc">Throw the shuttle through the lit shed. Gold rows for perfect throws, linen for ordinary ones, dark frayed rows where you missed — and the knot in each row sits exactly where your shuttle stopped. By row 30 the cloth is a picture of your own consistency.</span>
+        </span>
+      </a>
+      <a class="card" href="games/pinion.html">
+        <span class="plate" style="--a:#2C2013;--b:#E8D9B5"><span class="glyph">❧</span></span>
+        <span class="body">
+          <span class="name">Pinion</span>
+          <span class="hook">Keep falling feathers off the floor.</span>
+          <span class="verb">tap to strike</span>
+          <span class="desc">The cat scurries to whichever feather is falling fastest; you choose only when to strike. The lower you let one fall, the harder it goes — a late strike scores five times an early tap and leaves almost no margin.</span>
+        </span>
+      </a>
+      <a class="card" href="games/codex.html">
+        <span class="plate" style="--a:#241809;--b:#F0C878"><span class="glyph">❦</span></span>
+        <span class="body">
+          <span class="name">Codex</span>
+          <span class="hook">Stack a library, one volume at a time.</span>
+          <span class="verb">tap to drop the book</span>
+          <span class="desc">A book slides above the tower; drop it and any overhang is sliced away, so the stack narrows with every careless drop. Land within 4px and nothing is trimmed — three in a row and you start winning width back.</span>
+        </span>
+      </a>
+      </div>
+    </section>
+    <section>
+      <h2>How much</h2>
+      <p class="blurb">Games where the button is held, and the question is quantity rather than instant.</p>
+      <div class="grid">
+      <a class="card" href="games/span.html">
+        <span class="plate" style="--a:#3A2545;--b:#F3C97A"><span class="glyph">⌒</span></span>
+        <span class="body">
+          <span class="name">Span</span>
+          <span class="hook">Bridge the gap between towers at sunset.</span>
+          <span class="verb">hold to grow, release to drop</span>
+          <span class="desc">Hold to extend a plank, release and it falls across. A gold diamond marks dead centre: land the tip within 6px for a bonus and a chime that climbs with the streak.</span>
+        </span>
+      </a>
+      <a class="card" href="games/cornice.html">
+        <span class="plate" style="--a:#151C28;--b:#F0C878"><span class="glyph">⌂</span></span>
+        <span class="body">
+          <span class="name">Cornice</span>
+          <span class="hook">Rooftops in the rain, at night.</span>
+          <span class="verb">hold to charge, release to leap</span>
+          <span class="desc">Hold to gather the jump and a dotted arc shows where the current power lands you. A brass mark on each roof rewards a centred landing, which takes real calibration rather than minimum effort.</span>
+        </span>
+      </a>
+      <a class="card" href="games/bellows.html">
+        <span class="plate" style="--a:#1C1A22;--b:#C9A24A"><span class="glyph">⌁</span></span>
+        <span class="body">
+          <span class="name">Bellows</span>
+          <span class="hook">Fly the channel between ranks of organ pipes.</span>
+          <span class="verb">hold to rise</span>
+          <span class="desc">Hold and the wind column lifts you, let go and it doesn&#x27;t. Deliberately heavy controls — overcorrecting is the main way to die.</span>
+        </span>
+      </a>
+      <a class="card" href="games/ewer.html">
+        <span class="plate" style="--a:#2C2216;--b:#6FAF9A"><span class="glyph">⚱</span></span>
+        <span class="body">
+          <span class="name">Ewer</span>
+          <span class="hook">Fill jars to the mark as the belt carries them past.</span>
+          <span class="verb">hold to pour</span>
+          <span class="desc">Each jar wants its own level. The belt does not wait, so every extra drop you give one is time the next spends passing unfilled — you&#x27;re spending a fixed budget of seconds across a queue.</span>
+        </span>
+      </a>
+      <a class="card" href="games/aqueduct.html">
+        <span class="plate" style="--a:#2E7D74;--b:#8FC4E2"><span class="glyph">≈</span></span>
+        <span class="body">
+          <span class="name">Aqueduct</span>
+          <span class="hook">Swing down a sunlit aqueduct over open water.</span>
+          <span class="verb">hold the ring, release at the top</span>
+          <span class="desc">Hold to catch a hanging ring, swing, and let go at the top of the arc. The course steps downhill, which is what keeps the swing alive — height is the resource you spend.</span>
+        </span>
+      </a>
+      <a class="card" href="games/lintel.html">
+        <span class="plate" style="--a:#2A2C24;--b:#CFC3A4"><span class="glyph">⊓</span></span>
+        <span class="body">
+          <span class="name">Lintel</span>
+          <span class="hook">Vault a bar that keeps rising.</span>
+          <span class="verb">tap to plant, tap to release</span>
+          <span class="desc">Two decisions per attempt: the plant is spatial, judged in pixels against the box; the release is temporal, judged in milliseconds against the top of the swing. Height is the product of both, so a perfect plant with a late release still knocks the bar.</span>
+        </span>
+      </a>
+      </div>
+    </section>
+    <section>
+      <h2>Which way</h2>
+      <p class="blurb">Games where the button makes a choice that can be wrong.</p>
+      <div class="grid">
+      <a class="card" href="games/chancery.html">
+        <span class="plate" style="--a:#3A2A14;--b:#E8D9B5"><span class="glyph">❖</span></span>
+        <span class="body">
+          <span class="name">Chancery</span>
+          <span class="hook">Every door wants its own wax.</span>
+          <span class="verb">tap to change the seal</span>
+          <span class="desc">Carry a seal down a corridor of archive doors; a door opens only while your wax matches, and swings shut the moment you change it. Set it, hold it through the crossing, then cycle for the next. Three seals ahead are shown so you can plan.</span>
+        </span>
+      </a>
+      <a class="card" href="games/ballast.html">
+        <span class="plate" style="--a:#2C2216;--b:#C9A24A"><span class="glyph">⚖</span></span>
+        <span class="body">
+          <span class="name">Ballast</span>
+          <span class="hook">Sort cargo into a balance until it sits level.</span>
+          <span class="verb">tap to throw the diverter</span>
+          <span class="desc">Crates come down a chute with their weight in pips; the flap sends each one left or right. Get both pans to exactly equal weight, hold it level, and the porters clear the lot. A real-time partition problem with a 0.16s commitment on every throw.</span>
+        </span>
+      </a>
+      <a class="card" href="games/transept.html">
+        <span class="plate" style="--a:#3A2A16;--b:#1E2740"><span class="glyph">✛</span></span>
+        <span class="body">
+          <span class="name">Transept</span>
+          <span class="hook">Two cats, mirrored across a cathedral floor.</span>
+          <span class="verb">one tap leaps both</span>
+          <span class="desc">A single leap moves both, away from the slab in opposite directions. Blocks sit at different positions above and below, so the jump that saves one can bury the other. Every pair is provably clearable by one leap.</span>
+        </span>
+      </a>
+      <a class="card" href="games/rotunda.html">
+        <span class="plate" style="--a:#2A2018;--b:#D9A342"><span class="glyph">◎</span></span>
+        <span class="body">
+          <span class="name">Rotunda</span>
+          <span class="hook">Hold the centre of a circular library floor.</span>
+          <span class="verb">tap to loose the shot</span>
+          <span class="desc">The quill turns on its own; tap to loose a shot along its current bearing. Ink blots converge from the perimeter. The quiver holds six with a slow reload, and a confirmed hit refunds a shot — so accuracy is literally ammunition.</span>
+        </span>
+      </a>
+      </div>
+    </section>
+
+  <footer>
+    <p>Best scores last for the session only — these pages don't write to storage.
+       Headphones recommended: every sound is generated live, and several games use pitch to tell you
+       how well you're doing.</p>
+    <p>Built as a set, so they share a character, a typeface and a shell. Nine of them run on the same
+       five sprites.</p>
+    <p>A demo by <a href="https://github.com/martindavinci">Martin DaVinci</a>.</p>
+  </footer>
+</div>
+</body>
+</html>
