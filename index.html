@@ -7,7 +7,7 @@
 <meta name="description" content="22 one-button arcade games, one cat, no plugins. Each runs in a single self-contained page.">
 <meta property="og:title" content="The Scholar Cat Cabinet">
 <meta property="og:description" content="22 one-button arcade games sharing one character.">
-<meta property="og:image" content="img/leo.png">
+<meta property="og:image" content="https://martindavinci.github.io/mdv-demo-arcade/img/cat-sit.png">
 <meta property="og:type" content="website">
 <link rel="icon" href="img/favicon.png">
 <link href="vendor/fonts/fonts.css" rel="stylesheet">
@@ -26,7 +26,13 @@
   .wrap{max-width:1020px; margin:0 auto; padding:0 20px 80px}
 
   header{text-align:center; padding:64px 0 40px}
-  header img{width:132px; height:auto; filter:drop-shadow(0 12px 28px rgba(0,0,0,.6))}
+  /* the Codex cat: sits, and every few seconds cheers with a little hop */
+  .sitter{position:relative; width:128px; aspect-ratio:364/404; margin:0 auto;
+          filter:drop-shadow(0 12px 26px rgba(0,0,0,.6)); animation:hop 4.2s ease-in-out infinite}
+  .sitter img{position:absolute; inset:0; width:100%; height:100%}
+  .sitter .cheer{opacity:0; animation:cheer 4.2s linear infinite}
+  @keyframes cheer{0%,77.9%{opacity:0} 78%,93.9%{opacity:1} 94%,100%{opacity:0}}
+  @keyframes hop{0%,76%,100%{transform:translateY(0)} 82%{transform:translateY(-12px)} 88%{transform:translateY(0)} 91%{transform:translateY(-4px)} 94%{transform:translateY(0)}}
   h1{margin:16px 0 0; font-size:clamp(38px,7vw,60px); font-weight:600; letter-spacing:.5px}
   .sub{margin:10px auto 0; max-width:34ch; font-style:italic; color:#CFC2A6; font-size:19px; line-height:1.5}
   .rule{width:150px; height:1px; background:var(--gold); opacity:.5; margin:26px auto 0; position:relative}
@@ -66,13 +72,15 @@
   footer{margin-top:64px; padding-top:26px; border-top:1px solid var(--edge);
          color:var(--mute); font-size:14.5px; line-height:1.7}
   footer a{color:var(--gold)}
-  @media (prefers-reduced-motion:reduce){ .card{transition:none} }
+  @media (prefers-reduced-motion:reduce){ .card{transition:none} .sitter, .sitter .cheer{animation:none} }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <img src="img/leo.png" alt="A ginger cat in round spectacles and a scholar's doublet">
+    <div class="sitter" role="img" aria-label="A ginger cat in round spectacles, sitting">
+      <img class="sit" src="img/cat-sit.png" alt=""><img class="cheer" src="img/cat-cheer.png" alt="">
+    </div>
     <h1>The Scholar Cat Cabinet</h1>
     <p class="sub">22 one-button arcade games. One cat. One button, asked a different question each time.</p>
     <div class="rule"></div>
