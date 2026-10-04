@@ -180,7 +180,7 @@
       const needed = (n - 1) * COOL * v + 168;        // worst-case taps, plus time to hold it open
       nextX += Math.max(needed, 330 - dist * 0.019) + rnd() * 120;
       if (rnd() < 0.6)
-        coins.push({ x: nextX - 120 - rnd() * 80, y: FLOOR - 58 - rnd() * 54, got: false });
+        coins.push({ x: nextX - 120 - rnd() * 80, y: FLOOR - 18 - rnd() * 14, got: false });   // at the cat's height: it never leaves the floor
     }
     doors = doors.filter(d => d.x > dist - 120);
     coins = coins.filter(c => c.x > dist - 80);
@@ -279,7 +279,7 @@
       if (state === 'run') {
         for (const c of coins) {
           if (c.got) continue;
-          if (Math.abs(c.x - dist - CATX) < 24 && Math.abs(c.y - (FLOOR - 26)) < 70) {
+          if (Math.abs(c.x - dist - CATX) < 24 && Math.abs(c.y - (FLOOR - 19)) < 30) {
             c.got = true; gold++; sfxCoin(); burst(CATX, c.y, 4, '#E8B85C');
           }
         }
